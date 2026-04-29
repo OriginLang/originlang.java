@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.originlang</groupId>
+        <artifactId>originlang-parent</artifactId>
+        <version>0.1.2</version>
+        <relativePath>../originlang-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>originlang-admin-webflux</artifactId>
+    <name>${project.artifactId}</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.originlang</groupId>
+            <artifactId>originlang-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.originlang</groupId>
+            <artifactId>originlang-data-r2dbc</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.modulith</groupId>-->
+<!--            <artifactId>spring-modulith-actuator</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.modulith</groupId>-->
+<!--            <artifactId>spring-modulith-junit</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                    <!-- 强制重新编译 -->
+                    <!-- <forceJavacCompilerUse>true</forceJavacCompilerUse> -->
+                    <!-- 清理生成的文件 -->
+                    <!-- <generatedSourcesDirectory>${project.build.directory}/generated-sources/annotations</generatedSourcesDirectory> -->
+                    <annotationProcessorPaths>
+    <!--                        <path>-->
+    <!--                            <groupId>org.hibernate.orm</groupId>-->
+    <!--                            <artifactId>hibernate-processor</artifactId>-->
+    <!--                            <version>${hibernate.version}</version>-->
+    <!--                        </path>-->
+    <!--                        <path>-->
+    <!--                            <groupId>io.github.openfeign.querydsl</groupId>-->
+    <!--                            <artifactId>querydsl-apt</artifactId>-->
+    <!--                            <version>${querydsl-openfeign.version}</version>-->
+    <!--                        </path>-->
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

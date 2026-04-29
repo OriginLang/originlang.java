@@ -1,0 +1,3 @@
+# 所有 YAML 文件使用 LF
+*.yml text eol=lf
+*.yaml text eol=lf

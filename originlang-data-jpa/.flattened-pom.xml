@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.originlang</groupId>
+        <artifactId>originlang-parent</artifactId>
+        <version>0.1.2</version>
+        <relativePath>../originlang-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>originlang-data-jpa</artifactId>
+    <name>${project.artifactId}</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-processor &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate.orm</groupId>-->
+<!--            <artifactId>hibernate-processor</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--            <artifactId>querydsl-jpa</artifactId>-->
+<!--            <version>${querydsl-openfeign.version}</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--            <artifactId>querydsl-jpa-spring</artifactId>-->
+<!--            <version>${querydsl-openfeign.version}</version>-->
+<!--        </dependency>-->
+<!--  不需要这个依赖 -->
+<!--        <dependency>-->
+<!--            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--            <artifactId>querydsl-apt</artifactId>-->
+<!--            <version>${querydsl-openfeign.version}</version>-->
+<!--        </dependency>-->
+
+
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>tsid-creator</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.checkerframework/checker-qual -->
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.51.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <optional>true</optional>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Spring Boot 自动配置的实现 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <!--    IDE 配置提示    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <!--        配置元数据模型（通常不需要显式依赖）-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-metadata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-flyway</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.flywaydb</groupId>-->
+        <!--            <artifactId>flyway-core</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.flywaydb</groupId>-->
+        <!--            <artifactId>flyway-mysql</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-liquibase</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.liquibase</groupId>-->
+        <!--            <artifactId>liquibase-core</artifactId>-->
+        <!--        </dependency>-->
+        <!-- Source: https://mvnrepository.com/artifact/jakarta.data/jakarta.data-api -->
+        <dependency>
+            <groupId>jakarta.data</groupId>
+            <artifactId>jakarta.data-api</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                    <parameters>true</parameters>
+                    <generatedSourcesDirectory>target/generated-sources/java</generatedSourcesDirectory>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+<!--                        <path>-->
+<!--                            <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--                            <artifactId>querydsl-apt</artifactId>-->
+<!--                            <version>${querydsl-openfeign.version}</version>-->
+<!--                        </path>-->
+                        <path>
+                            <groupId>org.hibernate.orm</groupId>
+                            <artifactId>hibernate-processor</artifactId>
+                            <version>${hibernate.version}</version>
+                        </path>
+
+                        <path>
+                            <groupId>jakarta.persistence</groupId>
+                            <artifactId>jakarta.persistence-api</artifactId>
+                            <version>${jakarta-persistence.version}</version>
+                        </path>
+                        <path>
+                            <groupId>jakarta.annotation</groupId>
+                            <artifactId>jakarta.annotation-api</artifactId>
+                            <version>${jakarta-annotation.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <!--  用了hibernate的注解 https://openfeign.github.io/querydsl/tutorials/jpa/     -->
+<!--                    <annotationProcessors>-->
+<!--                        <annotationProcessor>-->
+<!--                            com.querydsl.apt.hibernate.HibernateAnnotationProcessor-->
+<!--                        </annotationProcessor>-->
+<!--                    </annotationProcessors>-->
+
+                    <!-- This setting is required for the hibernate-processor dependencies to
+                     also be managed by <dependencyManagement> rules, if any.
+                     More information is available in Maven compiler plugin documentation:
+                     https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html#annotationProcessorPathsUseDepMgmt -->
+<!--                    <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>-->
+                </configuration>
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>io.github.openfeign.querydsl</groupId>-->
+<!--                        <artifactId>querydsl-apt</artifactId>-->
+<!--                        <version>7.1</version>-->
+<!--                        <classifier>jpa</classifier>-->
+<!--                    </dependency>-->
+<!--                    <dependency>-->
+<!--                        <groupId>jakarta.persistence</groupId>-->
+<!--                        <artifactId>jakarta.persistence-api</artifactId>-->
+<!--                        <version>3.2.0</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+            </plugin>
+
+            <plugin>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-maven-plugin</artifactId>
+                <version>${hibernate.version}</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <enableLazyInitialization>true</enableLazyInitialization>
+                        </configuration>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+<!--            <plugin>-->
+<!--                &lt;!&ndash;start with basic information to get Liquibase plugin:-->
+<!--                include <groupId>, <artifactID>, and <version> elements&ndash;&gt;-->
+<!--                <groupId>org.liquibase</groupId>-->
+<!--                <artifactId>liquibase-maven-plugin</artifactId>-->
+<!--                <version>${liquibase.version}</version>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash;set values for Liquibase properties and settings-->
+<!--                    for example, the location of a properties file to use&ndash;&gt;-->
+<!--                    <propertyFile>liquibase.properties</propertyFile>-->
+<!--                </configuration>-->
+<!--                <dependencies>-->
+<!--                    &lt;!&ndash; https://mvnrepository.com/artifact/org.liquibase.ext/liquibase-hibernate7 &ndash;&gt;-->
+<!--                    <dependency>-->
+<!--                        <groupId>org.liquibase.ext</groupId>-->
+<!--                        <artifactId>liquibase-hibernate7</artifactId>-->
+<!--                        <version>5.0.1</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--            </plugin>-->
+
+        </plugins>
+    </build>
+
+</project>

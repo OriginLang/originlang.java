@@ -1,0 +1,83 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Deploy Central
+
+env:
+  JAVA_DISTRIBUTION: 'liberica'
+  JAVA_VERSION: '25'
+
+#on: workflow_dispatch
+on:
+ push:
+   branches:
+     - "main"
+   paths:
+     - "**"
+     - ".github/**"
+ pull_request:
+   branches: [ "main" ]
+   paths:
+     - "**"
+     - ".github/**"
+
+
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v6 # https://github.com/actions/checkout
+
+      - name: Set up Apache Maven Central
+        uses: actions/setup-java@v5
+        with: # running setup-java again overwrites the settings.xml
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: 'maven'
+          server-id: maven
+          server-username: MAVEN_USERNAME #从环境变量获取而不是从GitHub
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Verify release version
+        shell: bash
+        run: |
+          VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
+          echo "Project version: $VERSION"
+          if [[ "$VERSION" =~ -SNAPSHOT$ ]]; then
+            echo "Apache Maven Central only publishes release versions. Current version is $VERSION."
+            exit 1
+          fi
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - run: mvn -Pcentral clean install -DskipTests -DskipPublish
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Publish to Apache Maven Central
+        run: mvn -Pcentral deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

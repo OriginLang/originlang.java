@@ -1,0 +1,217 @@
+package com.universeparticle.cache;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.stereotype.Component;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+/**
+ * 不适用于 redis cluster
+ * redis 工具 for 单机部署
+ * 以下所有的get方法，没有从redis获取到值时，会从数据源查询并set
+ *
+ * @author justin
+ */
+@Component
+@RequiredArgsConstructor
+public class RedisTool {
+
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    /**
+     * @param majorKey 主key
+     * @param dbQuery 数据库查询方法
+     * @param <T> 数据类型
+     * @return 数据
+     */
+    public <T> T get(String majorKey, Supplier<T> dbQuery, Duration timeout){
+        Object cacheObj = redisTemplate.opsForValue().get(majorKey);
+        //缓存数据存在则直接返回
+        if (Objects.nonNull(cacheObj)) {
+            return (T) cacheObj;
+        }
+        //否则从数据库获取数据
+        T dbObj = dbQuery.get();
+        if (Objects.nonNull(dbObj)){
+            redisTemplate.opsForValue().set(majorKey, dbObj, timeout);
+        }
+        return dbObj;
+    }
+
+    /**
+     * 通过次要key查询数据
+     * 步骤： 次要key -> 主要key -> 数据
+     *
+     * @param minorKey    次key
+     * @param dbQuery     数据库查询方法
+     * @param getMajorKey 从数据获取主key的方法
+     * @param <T>         数据类型
+     * @return 数据
+     */
+    public <T> T getByMinorKey(String minorKey, Supplier<T> dbQuery, Function<T, String> getMajorKey, Duration timeout) {
+        //先找出对应的主key
+        Object majorKey = redisTemplate.opsForValue().get(minorKey);
+        //数据库数据
+        T dbObj;
+        //主key不存在
+        if (Objects.isNull(majorKey)) {
+            //从数据库获取数据
+            dbObj = dbQuery.get();
+
+        } else {
+            //主key存在时，通过主key获取缓存数据
+            Object cacheObj = redisTemplate.opsForValue().get(majorKey);
+            //缓存数据存在则直接返回
+            if (Objects.nonNull(cacheObj)) {
+                return (T) cacheObj;
+            }
+            //从数据库获取数据
+            dbObj = dbQuery.get();
+        }
+        //数据库数据存在时，更新缓存：次要key -> 主要key -> 数据
+        if (Objects.nonNull(dbObj)) {
+            String majorKeyStr = getMajorKey.apply(dbObj);
+            redisTemplate.opsForValue().set(minorKey, majorKeyStr, timeout);
+            redisTemplate.opsForValue().set(majorKeyStr, dbObj, timeout);
+            return dbObj;
+        }
+        return null;
+    }
+
+    /**
+     * 批量查询，不适用 redis cluster(集群模式下应该用管道)
+     *
+     * @param keys      keys
+     * @param keyPrefix key前缀
+     * @param objToKey  实体类映射到key的方法
+     * @param dbQuery   数据库查询方法
+     * @param <K>       key class
+     * @param <T>       实体类 class
+     * @return 实体类集合
+     */
+    public <K, T> List<T> listGet(List<K> keys, String keyPrefix, Function<T, K> objToKey, Function<List<K>, List<T>> dbQuery) {
+        return this.listGet(
+                keys,
+                keyPrefix,
+                objToKey,
+                dbQuery,
+                m -> redisTemplate.opsForValue().multiGet(m),
+                n -> redisTemplate.opsForValue().multiSet(n)
+        );
+    }
+
+    /**
+     * 使用管道
+     * 获取列表缓存，没有的从数据库获取后加入缓存
+     */
+    public <K, T> List<T> listGetUsePipe(List<K> keys, String keyPrefix, Function<T, K> objToKey, Function<List<K>, List<T>> dbQuery) {
+        return this.listGet(
+                keys,
+                keyPrefix,
+                objToKey,
+                dbQuery,
+                this::pipeGet,
+                this::pipeSet
+        );
+    }
+
+
+    /**
+     * 使用管道
+     * 批量get
+     * @param strKeys 批量key
+     * @return --
+     */
+    public List<Object> pipeGet(List<String> strKeys) {
+        List<Object> objects = redisTemplate.executePipelined(
+                (RedisCallback<Object>) connection -> {
+                    RedisSerializer<String> keySerializer = (RedisSerializer<String>) redisTemplate.getKeySerializer();
+                    connection.openPipeline();
+                    for (String strKey : strKeys) {
+                        connection.get(keySerializer.serialize(strKey));
+                    }
+                    return null;
+                },
+                redisTemplate.getValueSerializer()
+        );
+
+        return objects;
+    }
+
+    /**
+     * 使用管道
+     * 批量set
+     * @param map 批量 key 和 value
+     * @param <T> 泛型
+     */
+    public <T> void pipeSet(Map<String, T> map) {
+        redisTemplate.executePipelined(
+                (RedisCallback<Object>) connection -> {
+                    RedisSerializer<String> keySerializer = (RedisSerializer<String>) redisTemplate.getKeySerializer();
+                    RedisSerializer<Object> valueSerializer = (RedisSerializer<Object>) redisTemplate.getValueSerializer();
+                    connection.openPipeline();
+                    map.forEach((k,v) -> connection.set(keySerializer.serialize(k), valueSerializer.serialize(v)));
+                    return null;
+                },
+                redisTemplate.getValueSerializer()
+        );
+    }
+
+    /**
+     * 列表缓存方法，没有的从数据库获取后加入缓存
+     * @param keys      key后缀集合
+     * @param keyPrefix key的统一前缀
+     * @param objToKey  实体类映射到key的方法
+     * @param dbQuery   数据库查询方法
+     * @param getFuc    缓存get方法
+     * @param setFuc    缓存set方法
+     * @param <K>       key class
+     * @param <T>       实体类 class
+     * @return 查询结果
+     */
+    private <K, T> List<T> listGet(
+            List<K> keys,
+            String keyPrefix,
+            Function<T, K> objToKey,
+            Function<List<K>, List<T>> dbQuery,
+            Function<List<String>, List<Object>> getFuc,
+            Consumer<Map<String, T>> setFuc) {
+
+        List<String> strKeys = keys.stream().map(e -> keyPrefix + e).collect(Collectors.toList());
+        //先从缓存查询
+        List<Object> objects = getFuc.apply(strKeys);
+        List<T> cacheList =
+                Objects.isNull(objects) || objects.size() == 0 ?
+                        new ArrayList<>() :
+                        objects.stream().filter(Objects::nonNull).map(e -> (T) e).collect(Collectors.toList());
+
+        List<T> results = new ArrayList<>(cacheList);
+        //筛选未被缓存的key
+        List<K> noCacheKeys = cacheList.size() == 0 ?
+                keys :
+                keys.stream()
+                        .filter(key -> cacheList.stream().noneMatch(obj -> objToKey.apply(obj).equals(key)))
+                        .collect(Collectors.toList());
+        //从数据库查询
+        List<T> dbList = dbQuery.apply(noCacheKeys);
+        //缓存数据库数据
+        if (Objects.nonNull(dbList) && dbList.size() > 0) {
+            Map<String, T> map = dbList.stream().collect(Collectors.toMap(e -> keyPrefix + objToKey.apply(e), Function.identity()));
+            setFuc.accept(map);
+            results.addAll(dbList);
+        }
+
+        return results;
+    }
+}

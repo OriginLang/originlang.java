@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.originlang</groupId>
+        <artifactId>originlang-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>./originlang-parent/pom.xml</relativePath>
+    </parent>
+
+    <groupId>com.originlang</groupId>
+    <artifactId>originlang</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+
+    <modules>
+        <module>originlang-admin-webmvc</module>
+        <module>originlang-admin-webflux</module>
+
+        <module>originlang-base-lib</module>
+        <module>originlang-dependencies</module>
+        <module>originlang-parent</module>
+
+
+        <module>originlang-base-spring-boot</module>
+        <module>originlang-neo4j</module>
+
+        <module>originlang-authorization-server</module>
+        <module>originlang-auth-resource</module>
+
+        <module>originlang-data-jpa</module>
+
+        <module>originlang-data-r2dbc</module>
+        <module>originlang-webflux</module>
+        <module>originlang-webmvc</module>
+        <module>originlang-redis</module>
+        <module>originlang-minio</module>
+        <module>originlang-mongodb</module>
+        <module>originlang-elasticsearch</module>
+        <module>originlang-ai</module>
+        <module>originlang-quartz</module>
+    </modules>
+
+    <properties>
+        <app.profiles>dev,test,prod</app.profiles>
+        <group.id>com.originlang</group.id>
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+
+
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <release>${java.version}</release>-->
+            <!--                    <encoding>UTF-8</encoding>-->
+            <!--                    <fork>true</fork>-->
+            <!--                    <compilerArgs>-->
+            <!--                        <arg>-XDcompilePolicy=simple</arg>-->
+            <!--                        <arg>&#45;&#45;should-stop=ifError=FLOW</arg>-->
+            <!--                        <arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>-->
+            <!--                        <arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>-->
+            <!--                    </compilerArgs>-->
+            <!--                    <annotationProcessorPaths>-->
+            <!--                        <path>-->
+            <!--                            <groupId>com.google.errorprone</groupId>-->
+            <!--                            <artifactId>error_prone_core</artifactId>-->
+            <!--                            <version>2.38.0</version>-->
+            <!--                        </path>-->
+            <!--                        <path>-->
+            <!--                            <groupId>com.uber.nullaway</groupId>-->
+            <!--                            <artifactId>nullaway</artifactId>-->
+            <!--                            <version>0.12.7</version>-->
+            <!--                        </path>-->
+            <!--                    </annotationProcessorPaths>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+
+        </plugins>
+    </build>
+
+
+</project>

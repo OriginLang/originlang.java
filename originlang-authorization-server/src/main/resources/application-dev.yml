@@ -1,0 +1,62 @@
+spring:
+  datasource:
+    #url: jdbc:h2:file:./data/testdb
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver # com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10  # 最大连接数
+      minimum-idle: 5 # 最小空闲数
+      connection-timeout: 2000 # 获取连接超时时间； 默认30s
+      pool-name: hikari # 连接池名称
+      idle-timeout: 600000 # 空闲超时时间；默认是十分钟；空闲时间超过设定时间则会被回收
+      auto-commit: true # 是否自动提交
+      max-lifetime: 1800000 # 最大存活时间，默认30分钟
+      connection-test-query: SELECT 1  # 连接数据库后测试语句
+      validation-timeout: 1000 #
+  jpa:
+    defer-datasource-initialization: false # 是否让data.sql 延后在hibernate后执行
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true # DDL 生成功能 与hibernate ddl-auto
+    hibernate:
+      ddl-auto: update #create,create-drop,update,validate ,none
+    show-sql: true
+    #    database: h2 # 数据库 mysql
+    open-in-view: false
+  #    properties:
+  #      hibernate:
+  #        hbm2ddl:
+  #          auto: update
+  sql:
+    init:
+      encoding: UTF-8
+      schema-locations: optional:classpath*:schema-h2.sql # ${platform} 测试没有生成
+      platform: h2 # hsqldb、h2、oracle、mysql、postgresql
+      mode: always # 是否启用初始化 ,never,
+
+  docker:
+    compose:
+      enabled: false #true # 是否开启docker-compose
+      ## 指定docker-compose文件路径，可能会因操作系统不同而根路径不一样,当报错时可以先注释掉file的配置,根据日志查看路径信息
+      #file: ./up-server-java/server/docker-compose-dev.yml
+      file: docker-compose.yml  # 指定docker-compose文件路径，目录是项目根目录的上一级
+      #      profiles:
+      #        active: dev #激活Docker Compose配置文件
+      lifecycle-management: start_only # 控制容器的生命周期 start_only,, start_and_stop
+      readiness:
+        tcp:
+          read-timeout: 30s
+          connect-timeout: 30s #1m
+        timeout: 1m
+        wait: never # always, never, on-failure
+      start:
+        command: up # up  会重新加载docker-compose.yaml文件的改动 ,start 不会重新加载docker-compose.yaml文件的改动。
+      stop:
+        command: stop # down ,stop 停止只是容器, down 停止容器并删除容器, network网络。
+        timeout: 30s # 停止容器的超时时间
+
+originlang:
+  jwt:
+    rsa-public-key: ${ORIGINLANG_JWT_RSA_PUBLIC_KEY:}
+    rsa-private-key: ${ORIGINLANG_JWT_RSA_PRIVATE_KEY:}

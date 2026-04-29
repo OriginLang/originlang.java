@@ -1,0 +1,19 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: auth-server
+  devtools:
+    restart:
+      enabled: true
+      poll-interval: "2s" # 每2s检查一次
+      quiet-period: "1s"  # 保持1s静默,确保没有其他更改
+      log-condition-evaluation-delta: false # 是否记录条件评估中的变化 Logging Changes in Condition Evaluation
+      #exclude: "" 修改默认的排除项
+      #additional-exclude:  新增排除项
+      #trigger-file: ".reloadtrigger" #触发文件,当配置此项时,只有更新此文件才会触发重启
+  profiles:
+    active: dev
+  threads:
+    virtual:
+      enabled: true

@@ -1,0 +1,66 @@
+
+services:
+  postgres:
+    image: postgres:18.1
+    container_name: postgres
+    restart: "no" # no ,always
+    profiles:
+      - admin
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres  # 默认用户名：postgres ， 默认数据库：postgres 。
+      - PGDATA=/var/lib/postgres/data/pgdata
+    ports:
+      - "5432:5432"
+#    volumes:
+#      - "~/docker-volumes/postgres/data:/var/lib/postgres/data"   # 数据挂载
+#      - "~/docker-volumes/postgres/backup:/var/backup/pgsql:rw"   # 备份路径
+#    network_mode: host # 使用主机网络
+  redis:
+    image: redis:7.4.2
+    container_name: redis # 容器名
+    restart: no #on-failure # 启动
+    ports:
+      - "6380:6379" # 宿主机端口:容器端口
+    command:
+      [ "redis-server", "/etc/redis/redis.conf", "--requirepass 'redis'" ]
+    volumes:
+      - ~/docker-volumes/redis/data:/data # 宿主机目录：容器目录 ， 挂载目录
+      - ~/docker-volumes/redis/redis.conf:/etc/redis/redis.conf:ro #ro 代表readonly   rw 代表readwrite
+    labels:
+      org.springframework.boot.readiness-check.tcp.disable: true # 禁用springboot readiness检查
+#  neo4j:
+#    image: neo4j
+#    container_name: neo4j # 容器名
+#    ports:
+#      - "7474:7474"
+#      - "7687:7687"
+#    restart: on-failure # always
+#    volumes:
+#      - ~/docker-volumes/neo4j/data:/data
+#      - ~/docker-volumes/neo4j/logs:/logs
+#      - ~/docker-volumes/neo4j/conf:/var/lib/neo4j/conf
+#      - ~/docker-volumes/neo4j/import:/var/lib/neo4j/import
+#      - ~/docker-volumes/neo4j/plugins:/var/lib/neo4j/plugins
+#    environment:
+#      - NEO4J_AUTH=neo4j/neo4j
+#    labels:
+#      org.springframework.boot.ignore: true # 跳过容器
+#      org.springframework.boot.readiness-check.tcp.disable: true # 禁用springboot readiness检查
+#      #org.springframework.boot.service-connection: redis # 如果是自定义镜像
+#  mysql:
+#    image: m.daocloud.io/docker.io/mysql:8.4.7
+#    restart: always # 重启策略
+#    container_name: mysql2
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=mysql
+#      - MYSQL_DATABASE=testDb
+#      - MYSQL_USER=mysql
+#      - MYSQL_PASSWORD=mysql
+#    #      - TZ=Asia/Shanghai
+#    ports:
+#      - "8306:3306"
+#    volumes:
+#      - ~/docker-volumes/mysql2/my.cnf:/etc/mysql/my.cnf:ro #ro 代表readonly   rw 代表readwrite
+#      - ~/docker-volumes/mysql2/data:/var/lib/mysql

@@ -1,0 +1,22 @@
+{
+  "serverUrl": "http://localhost:9100/",
+  "isStrict": false,
+  "allInOne": true,
+  "outPath": "./src/main/resources/static/doc",
+  "coverOld": true,
+  "createDebugPage": true,
+  "md5EncryptedHtmlName": false,
+  "projectName": "Originlang",
+  "requestHeaders": [
+    {
+      "name": "Authorization",
+      "type": "string",
+      "desc": "Bearer token",
+      "value": "eyJraWQiOiIxMjM0NTYiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIqKioqIiwiYXVkIjoic2FhcyIsImlzcyI6Imh0dHBzOi8vYXV0aC1zZXJ2ZXIiLCJleHAiOjQzNTUxMDQxOTYsImlhdCI6MTc2MzEwNDE5NiwianRpIjoiNzc3MDA2MDkyODI4NDA1MjQzIiwiYXV0aG9yaXRpZXMiOiJST0xFX3NhYXMifQ.c6bWiefG9NO_tCCmni5YfAbZiXP0zUuqbARWSRLSHT8clcWmDZ1y0-cWrYPdrA1YxSogme72rzjZvTME9RqWvtE6-KbuWo7o47aN42D6HXFjkIge7QXCqij-XvlgEeFDtOJsaQMGmy34IzwgN3ayX9lm8LbLvWykRY6YfqK1RBBrmYDBZk0fexgXNKhTlRLQaP2LyfjdOw_5OfjoB42MwZmsky1ixHXsrY7m1HG5giZn8PpIRj-tjYQJzEedUwPcz73axVAVQjt0Mu3JZkgNlWHbk0mL0o7a9qDyMC1pRiPIAKXvqOhxj3bfh8rU_TKwp5F6aNpBZxcO_c54jLa91g",
+      "required": false,
+      "since": "1.0.0",
+      "pathPatterns": "/**",
+      "excludePathPatterns": "/login"
+    }
+  ]
+}

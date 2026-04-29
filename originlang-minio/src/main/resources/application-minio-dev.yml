@@ -1,0 +1,7 @@
+minio:
+  enable: true # 是否开启
+  host: http://127.0.0.1
+  port: 9000
+  secure: false # true for https
+  access-key: minio
+  secret-key: minio

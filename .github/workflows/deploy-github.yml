@@ -1,0 +1,61 @@
+name: Deploy GitHub
+
+env:
+  JAVA_DISTRIBUTION: "liberica"
+  JAVA_VERSION: "25"
+
+on:
+  push:
+    branches:
+      - "feature/**"
+      - "feat/**"
+      - "dev"
+      - "dev/**"
+    paths:
+      - "**"
+  pull_request:
+    branches:
+      - "dev"
+      - "dev/**"
+    paths:
+      - "**"
+
+
+jobs:
+  publish-github-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK for GitHub Packages
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Verify snapshot version
+        shell: bash
+        run: |
+          VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
+          echo "Project version: $VERSION"
+          if [[ ! "$VERSION" =~ -SNAPSHOT$ ]]; then
+            echo "GitHub Packages only publishes SNAPSHOT versions. Current version is $VERSION."
+            exit 1
+          fi
+
+      - name: Build with github profile
+        run: mvn -Pgithub clean install -DskipTests
+
+      - name: Publish to GitHub Packages
+        run: mvn -Pgithub --batch-mode --update-snapshots  deploy -DskipTests
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

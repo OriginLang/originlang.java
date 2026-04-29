@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:/data/testdb # jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver # com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10  # 最大连接数
+      minimum-idle: 5 # 最小空闲数
+      connection-timeout: 2000 # 获取连接超时时间； 默认30s
+      pool-name: hikari # 连接池名称
+      idle-timeout: 600000 # 空闲超时时间；默认是十分钟；空闲时间超过设定时间则会被回收
+      auto-commit: true # 是否自动提交
+      max-lifetime: 1800000 # 最大存活时间，默认30分钟
+      connection-test-query: SELECT 1  # 连接数据库后测试语句
+      validation-timeout: 1000 #
+  jpa:
+    defer-datasource-initialization: true # data.sql 延后执行
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true # DDL 生成功能 与hibernate ddl-auto
+    hibernate:
+      ddl-auto: update #create,create-drop,update,validate ,none
+    show-sql: true
+    database: h2 # 数据库
+    open-in-view: false
