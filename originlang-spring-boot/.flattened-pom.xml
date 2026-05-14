@@ -10,7 +10,7 @@
         <relativePath>../originlang-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>originlang-base-spring-boot</artifactId>
+    <artifactId>originlang-spring-boot</artifactId>
     <name>${project.artifactId}</name>
 
     <dependencies>
@@ -58,7 +58,7 @@
         </dependency>
         <dependency>
             <groupId>com.originlang</groupId>
-            <artifactId>originlang-base-lib</artifactId>
+            <artifactId>originlang-common</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/tools.jackson.datatype/jackson-datatype-jsr310 -->
         <!--        <dependency>-->

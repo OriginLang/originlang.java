@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.originlang</groupId>
-    <artifactId>originlang-base-lib</artifactId>
+    <artifactId>originlang-common</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>

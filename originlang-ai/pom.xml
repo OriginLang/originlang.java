@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.originlang</groupId>
-            <artifactId>originlang-base-spring-boot</artifactId>
+            <artifactId>originlang-spring-boot</artifactId>
         </dependency>
         <dependency>
             <groupId>com.originlang</groupId>
